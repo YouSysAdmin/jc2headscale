@@ -35,6 +35,15 @@ Flags:
       --strip-email-domain     Strip e-mail domain (default true)
 ```
 
+## Example
+```sh
+// Fill policy user groups from Jumpcloud
+JC_API_KEY=0000000 jc2headscale prepare --input-policy=policy.json --output-policy=out.json
+
+// Setup policy to Headscale
+headscale policy set -f out.json 
+```
+
 You need to add to your policy file the additional key with a list of Jumpcloud groups that you want to use:
 ```json
 {
