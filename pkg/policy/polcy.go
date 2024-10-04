@@ -2,9 +2,10 @@ package policy
 
 import (
 	"encoding/json"
+	"os"
+
 	HsPolicy "github.com/juanfont/headscale/hscontrol/policy"
 	"github.com/tailscale/hujson"
-	"os"
 )
 
 // Policy extend Headscale policy
@@ -32,7 +33,7 @@ func (p *Policy) ReadPolicyFromFile(path string) error {
 
 // WritePolicyToFile write Headscale policy from file
 func (p *Policy) WritePolicyToFile(path string) error {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		return err
 	}

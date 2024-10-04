@@ -3,9 +3,10 @@ package jc
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	jcapiv1 "github.com/TheJumpCloud/jcapi-go/v1"
 	jcapiv2 "github.com/TheJumpCloud/jcapi-go/v2"
-	"strings"
 )
 
 // JCClient Jumpcloud client
@@ -50,7 +51,6 @@ func NewClient(apiKey string) JCClient {
 
 // GetGroupByName Get Jumpcloud group by name
 func (c JCClient) GetGroupByName(grounName string) (Group, error) {
-
 	filter := map[string]interface{}{
 		"filter": []string{fmt.Sprintf("name:eq:%s", grounName)},
 		"limit":  int32(100),
@@ -73,7 +73,6 @@ func (c JCClient) GetGroupByName(grounName string) (Group, error) {
 
 // GetGroupMembers Get Jumpcloud group members
 func (c JCClient) GetGroupMembers(groupId string, stripEmailDomain bool) ([]User, error) {
-
 	var users []User
 
 	options := map[string]interface{}{
@@ -98,7 +97,6 @@ func (c JCClient) GetGroupMembers(groupId string, stripEmailDomain bool) ([]User
 
 // GetUserInfo get Jumpcloud user info
 func (c JCClient) GetUserInfo(userId string, stripEmailDomain bool) (User, error) {
-
 	options := map[string]interface{}{
 		"limit": int32(100),
 	}

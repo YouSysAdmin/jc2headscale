@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/yousysadmin/jc2headscale/pkg/jc"
 	"github.com/yousysadmin/jc2headscale/pkg/policy"
@@ -78,7 +79,7 @@ var preparePolicy = &cobra.Command{
 			logger.Info(fmt.Sprintf("Collect %d members for group: %s", len(users), g))
 		}
 
-		var hsGroups = map[string][]string{}
+		hsGroups := map[string][]string{}
 		for _, g := range jcGroupsInfo {
 			var upg []string
 			for _, u := range g.Users {
