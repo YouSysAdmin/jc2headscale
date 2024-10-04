@@ -37,6 +37,9 @@ Flags:
       --strip-email-domain     Strip e-mail domain (default true)
 ```
 
+The `--strip-email-domain` flag must be set eq to `oid.strip_email_domain` in your Headscale server config,
+this flag determines whether it is necessary to trim the domain from the user's email or not, by default is `true`.
+
 ## Example
 
 ```sh
