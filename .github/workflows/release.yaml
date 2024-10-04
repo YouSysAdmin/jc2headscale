@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   releases-matrix:
-    name: Release jc2aws
+    name: Release jc2headscale
     runs-on: ubuntu-latest
     strategy:
       matrix:
