@@ -39,7 +39,9 @@ var preparePolicy = &cobra.Command{
 			logger.Fatal("Prepare error:", logger.ArgsFromMap(errorInfo))
 		}
 
-		if len(hsPolicy.JCGroupList) <= 0 {
+		// Get group names from policy file
+		groups := hsPolicy.GetGroupNames()
+		if len(groups) <= 0 {
 			errorInfo := map[string]any{
 				"Step":        "Get groups from policy file",
 				"Policy file": inputPolicyFile,
@@ -49,10 +51,12 @@ var preparePolicy = &cobra.Command{
 		}
 
 		// Get groups and group members
-		var jcGroupsInfo []jc.Group
-		for _, g := range hsPolicy.JCGroupList {
+		var jcGroupsInfo []*jc.Group
+		for _, g := range groups {
 			logger.Info(fmt.Sprintf("Get group: %s", g))
 
+			// Get group info from Jumpcloud
+			// If group doesn't find, returns nil
 			group, err := client.GetGroupByName(g)
 			if err != nil {
 				errorInfo := map[string]any{
@@ -63,20 +67,25 @@ var preparePolicy = &cobra.Command{
 				logger.Fatal("Prepare error:", logger.ArgsFromMap(errorInfo))
 			}
 
-			users, err := client.GetGroupMembers(group.ID, stripEmailDomain)
-			if err != nil {
-				errorInfo := map[string]any{
-					"Step":      "Get user list for group",
-					"GroupName": g,
-					"Error":     err.Error(),
+			// If a group is found in Jumpcloud, try to get a members
+			if group != nil {
+				users, err := client.GetGroupMembers(group.ID, stripEmailDomain)
+				if err != nil {
+					errorInfo := map[string]any{
+						"Step":      "Get user list for group",
+						"GroupName": g,
+						"Error":     err.Error(),
+					}
+					logger.Fatal("Prepare error:", logger.ArgsFromMap(errorInfo))
 				}
-				logger.Fatal("Prepare error:", logger.ArgsFromMap(errorInfo))
+
+				group.Users = users
+				jcGroupsInfo = append(jcGroupsInfo, group)
+
+				logger.Info(fmt.Sprintf("Collect %d members for group: %s", len(users), g))
+			} else {
+				logger.Info(fmt.Sprintf("Group '%s' not foud in the Jumpcloud", g))
 			}
-
-			group.Users = users
-			jcGroupsInfo = append(jcGroupsInfo, group)
-
-			logger.Info(fmt.Sprintf("Collect %d members for group: %s", len(users), g))
 		}
 
 		hsGroups := map[string][]string{}
@@ -85,7 +94,14 @@ var preparePolicy = &cobra.Command{
 			for _, u := range g.Users {
 				upg = append(upg, u.Part)
 			}
+
+			// Add the prefix 'group' to a group name
 			groupName := fmt.Sprintf("group:%s", g.Name)
+
+			// If, in the policy, there are static users for a group,
+			// then we add them, too
+			upg = append(upg, hsPolicy.Groups[groupName]...)
+
 			hsGroups[groupName] = upg
 		}
 

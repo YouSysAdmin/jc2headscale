@@ -50,7 +50,7 @@ func NewClient(apiKey string) JCClient {
 }
 
 // GetGroupByName Get Jumpcloud group by name
-func (c JCClient) GetGroupByName(grounName string) (Group, error) {
+func (c JCClient) GetGroupByName(grounName string) (*Group, error) {
 	filter := map[string]interface{}{
 		"filter": []string{fmt.Sprintf("name:eq:%s", grounName)},
 		"limit":  int32(100),
@@ -58,17 +58,17 @@ func (c JCClient) GetGroupByName(grounName string) (Group, error) {
 
 	group, _, err := c.V2.UserGroupsApi.GroupsUserList(c.V2Auth, c.ContentType, c.ContentType, filter)
 	if err != nil {
-		return Group{}, err
+		return nil, err
 	}
 
 	if len(group) != 0 {
-		return Group{
+		return &Group{
 			ID:   group[0].Id,
 			Name: group[0].Name,
 		}, nil
 	}
 
-	return Group{}, fmt.Errorf("group '%s' not found", grounName)
+	return nil, nil
 }
 
 // GetGroupMembers Get Jumpcloud group members

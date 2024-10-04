@@ -47,16 +47,24 @@ JC_API_KEY=0000000 jc2headscale prepare --input-policy=policy.hjson --output-pol
 headscale policy set -f out.json
 ```
 
-You need to add to your policy file the additional key with a list of Jumpcloud groups that you want to use:
+You can specify the Jumpcloud group in your Headscale policy file,
+group name in the Jumcploud should be eq to a policy group name without the 'group:' prefix.
 
-```json
+In the below example,  
+group `not-jc` isn't present in the Jumpcloud, and as a result, this group stays as is,  
+the `network-all` group present in the Jumpcloud and will be supplemented by users from Jumpcloud if users exist for
+this
+group and the `admin` user stays in the group,  
+the `network-prod` group is present in the Jumpcloud and will be filled by users from Jumpcloud if users exist for this
+group.
+
+```jsonc
 {
-  ...
-jc_group_list": [
-    "admins",
-    "devellopers",
-    "...",
-  ],
-  ...
+  "groups": {
+    "group:not-jc": ["admin"],
+    "group:network-all": ["admin"],
+    "group:network-prod": []
+  },
+  ....
 }
 ```

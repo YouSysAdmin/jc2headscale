@@ -3,15 +3,15 @@ package policy
 import (
 	"encoding/json"
 	"os"
+	"strings"
 
-	HsPolicy "github.com/juanfont/headscale/hscontrol/policy"
+	hsPolicy "github.com/juanfont/headscale/hscontrol/policy"
 	"github.com/tailscale/hujson"
 )
 
 // Policy extend Headscale policy
 type Policy struct {
-	HsPolicy.ACLPolicy
-	JCGroupList []string `json:"jc_group_list"`
+	hsPolicy.ACLPolicy
 }
 
 // ReadPolicyFromFile read Headscale policy from file
@@ -54,4 +54,15 @@ func (p *Policy) AppendGroups(groups map[string][]string) {
 	for g, u := range groups {
 		p.Groups[g] = u
 	}
+}
+
+// GetGroupNames get group names from policy file
+func (p *Policy) GetGroupNames() []string {
+	var groups []string
+	for k, _ := range p.Groups {
+		group := strings.Split(k, ":")[1]
+		groups = append(groups, group)
+	}
+
+	return groups
 }
