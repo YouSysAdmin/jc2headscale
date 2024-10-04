@@ -18,8 +18,12 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Build dir
+build/
+
 # Go workspace file
 go.work
 
 # Json files
 *.json
+*.hjson
