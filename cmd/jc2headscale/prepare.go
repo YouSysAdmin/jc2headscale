@@ -25,7 +25,7 @@ var preparePolicy = &cobra.Command{
 		}
 
 		hsPolicy := policy.Policy{}
-		client := jc.NewClient(jcApiKey)
+		client := jc.NewClient(jcAPIKey)
 
 		// Read policy template
 		logger.Info(fmt.Sprintf("Read policy template from: %s", inputPolicyFile))
@@ -57,8 +57,8 @@ var preparePolicy = &cobra.Command{
 
 			// Get group info from Jumpcloud
 			// If group doesn't find, returns nil
-			group, err := client.GetGroupByName(g)
-			if err != nil {
+			group, errs := client.GetGroupByName(g)
+			if errs != nil {
 				errorInfo := map[string]any{
 					"Step":      "Get group",
 					"GroupName": g,
@@ -69,8 +69,8 @@ var preparePolicy = &cobra.Command{
 
 			// If a group is found in Jumpcloud, try to get a members
 			if group != nil {
-				users, err := client.GetGroupMembers(group.ID, stripEmailDomain)
-				if err != nil {
+				users, errs := client.GetGroupMembers(group.ID, stripEmailDomain)
+				if errs != nil {
 					errorInfo := map[string]any{
 						"Step":      "Get user list for group",
 						"GroupName": g,

@@ -27,3 +27,8 @@ go.work
 # Json files
 *.json
 *.hjson
+
+# IDE's
+.idea
+.vscode
+.fleet
