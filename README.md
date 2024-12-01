@@ -1,4 +1,7 @@
-# jc2headscale
+# DEPRECATED
+Please following to the repository https://github.com/YouSysAdmin/headscale-pf
+
+## jc2headscale
 
 CLI tool for managing user groups in a Headscale policy file.
 
